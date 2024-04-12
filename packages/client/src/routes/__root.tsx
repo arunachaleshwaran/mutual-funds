@@ -5,16 +5,16 @@ import {
 } from '@tanstack/react-router';
 import type { QueryClient } from '@tanstack/react-query';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
+import style from './__root.module.css';
 import useAuthStore from '../Store';
-
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
 }>()({
   component: () => (
-    <>
+    <main style={style}>
       <Outlet />
       <TanStackRouterDevtools />
-    </>
+    </main>
   ),
   beforeLoad: ({ location }) => {
     const unauthenticatedRoutes = ['/login'];

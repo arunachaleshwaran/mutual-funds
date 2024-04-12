@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 
 export type Store = {
-  authenticated: boolean;
-  setAuthenticated: (authenticated: boolean) => void;
+  authenticated: string;
+  setAuthenticated: (authenticated: string) => void;
 };
 const useAuthStore = create<Store>()(set => ({
-  authenticated: false,
+  authenticated: '',
   setAuthenticated: authenticated => set(() => ({ authenticated })),
 }));
 export default useAuthStore;

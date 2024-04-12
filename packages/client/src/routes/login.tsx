@@ -1,4 +1,6 @@
+import type { FormEvent, FormEventHandler } from 'react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import style from './login.module.css';
 import useAuthStore from '../Store';
 
 export const Route = createFileRoute('/login')({
@@ -18,16 +20,26 @@ function Index() {
   );
   const { redirectUrl } = Route.useSearch();
   const navigate = useNavigate();
-  const login = () => {
-    setAuthenticated(true);
+  const login: FormEventHandler<HTMLFormElement> = (
+    event: FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
+    const phone = new FormData(event.target as HTMLFormElement).get(
+      'phone'
+    ) as string;
+    setAuthenticated(phone);
     void navigate({ to: redirectUrl });
   };
   return (
-    <>
-      Login Page
-      <button type='button' onClick={() => login()}>
-        Login
-      </button>
-    </>
+    <form style={style} onSubmit={login}>
+      <input
+        name='phone'
+        pattern='\d{10}'
+        placeholder='Phone Number'
+        type='text'
+        required
+      />
+      <input type='submit' value='Login' />
+    </form>
   );
 }
