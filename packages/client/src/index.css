@@ -14,9 +14,11 @@ body {
   --secondary-text: #222;
   --primary-text-inv: #fff;
   --bg: #fff;
+  font-family: sans-serif;
 }
 
-input {
+input,
+button {
   border: none;
 }
 input[type='text']:focus-visible {

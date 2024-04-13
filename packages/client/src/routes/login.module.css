@@ -1,4 +1,4 @@
-form {
+.form {
   display: grid;
   grid-template: 'number number' '... login'/1fr auto;
   gap: 0.7em;

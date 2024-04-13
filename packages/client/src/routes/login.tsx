@@ -4,7 +4,7 @@ import style from './login.module.css';
 import useAuthStore from '../Store';
 
 export const Route = createFileRoute('/login')({
-  component: Index,
+  component: Comp,
   validateSearch: (search: Record<string, unknown>) => {
     return {
       redirectUrl:
@@ -14,7 +14,7 @@ export const Route = createFileRoute('/login')({
     };
   },
 });
-function Index() {
+function Comp() {
   const setAuthenticated = useAuthStore(
     store => store.setAuthenticated
   );
@@ -31,7 +31,7 @@ function Index() {
     void navigate({ to: redirectUrl });
   };
   return (
-    <form style={style} onSubmit={login}>
+    <form className={style.form} onSubmit={login}>
       <input
         name='phone'
         pattern='\d{10}'

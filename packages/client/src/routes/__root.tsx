@@ -11,7 +11,7 @@ export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
 }>()({
   component: () => (
-    <main style={style}>
+    <main className={style.main}>
       <Outlet />
       <TanStackRouterDevtools />
     </main>
