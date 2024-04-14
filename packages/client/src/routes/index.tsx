@@ -24,7 +24,7 @@ function Comp() {
   // Show all the form
   return (
     <div className={style.home}>
-      <button type='button'>Transact</button>
+      <Link to='/transact'>Transact</Link>
       <div className={style.investments}>
         {investments.map(i => (
           <div

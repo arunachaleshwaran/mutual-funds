@@ -11,11 +11,17 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root';
+import { Route as TransactImport } from './routes/transact';
 import { Route as LoginImport } from './routes/login';
 import { Route as HoldingImport } from './routes/holding';
 import { Route as IndexImport } from './routes/index';
 
 // Create/Update Routes
+
+const TransactRoute = TransactImport.update({
+  path: '/transact',
+  getParentRoute: () => rootRoute,
+} as any);
 
 const LoginRoute = LoginImport.update({
   path: '/login',
@@ -48,6 +54,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport;
       parentRoute: typeof rootRoute;
     };
+    '/transact': {
+      preLoaderRoute: typeof TransactImport;
+      parentRoute: typeof rootRoute;
+    };
   }
 }
 
@@ -57,6 +67,7 @@ export const routeTree = rootRoute.addChildren([
   IndexRoute,
   HoldingRoute,
   LoginRoute,
+  TransactRoute,
 ]);
 
 /* prettier-ignore-end */

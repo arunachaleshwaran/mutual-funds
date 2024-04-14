@@ -7,8 +7,12 @@ type Strategy = (typeof strategies)[number];
 export const Route = createFileRoute('/holding')({
   component: Comp,
   validateSearch: (search: Record<string, unknown>) => {
+    const DEFAULT_AMOUNT = 0;
     return {
-      amount: typeof search.amount === 'number' ? search.amount : 0,
+      amount:
+        typeof search.amount === 'number'
+          ? search.amount
+          : DEFAULT_AMOUNT,
       strategy: (typeof search.strategy === 'string'
         ? search.strategy
         : 'Arbitrage Strategy') as Strategy['name'],
@@ -22,6 +26,7 @@ function Comp() {
   if (!currStrategy) {
     return <div>Strategy not found</div>;
   }
+  const PERCENTAGE = 100;
   return (
     <div className={style.holding}>
       <Link to='/' />
@@ -31,7 +36,7 @@ function Comp() {
             {fund.name}
             <div className={homeStyle.option}>
               <InvestVsMarket
-                invest={(amount * fund.percentage) / 100}
+                invest={(amount * fund.percentage) / PERCENTAGE}
                 market={0}
               />
             </div>
