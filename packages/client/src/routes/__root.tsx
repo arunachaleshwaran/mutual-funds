@@ -11,10 +11,12 @@ export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
 }>()({
   component: () => (
-    <main className={style.main}>
-      <Outlet />
+    <>
+      <main className={style.main}>
+        <Outlet />
+      </main>
       <TanStackRouterDevtools />
-    </main>
+    </>
   ),
   beforeLoad: ({ location }) => {
     const unauthenticatedRoutes = ['/login'];

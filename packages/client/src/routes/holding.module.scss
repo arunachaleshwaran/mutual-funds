@@ -1,0 +1,18 @@
+.holding {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  align-items: center;
+  a {
+    width: 100%;
+    text-decoration-line: none;
+    color: var(--primary-text);
+    display: flex;
+    flex-direction: column;
+    &::after {
+      content: '←';
+      font-size: xx-large;
+    }
+  }
+}

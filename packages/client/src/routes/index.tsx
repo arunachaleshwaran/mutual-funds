@@ -1,5 +1,5 @@
+import { Link, createFileRoute } from '@tanstack/react-router';
 import InvestVsMarket from '../components/InvestVsMarket';
-import { createFileRoute } from '@tanstack/react-router';
 import type strategies from '../strategies';
 import style from './index.module.scss';
 export const Route = createFileRoute('/')({
@@ -33,7 +33,11 @@ function Comp() {
             {i.name}
             <div className={style.option}>
               <InvestVsMarket invest={i.amount} market={0} />
-              <button type='button'>See Holdings</button>
+              <Link
+                search={{ amount: i.amount, strategy: i.name }}
+                to='/holding'>
+                See Holdings
+              </Link>
             </div>
           </div>
         ))}
