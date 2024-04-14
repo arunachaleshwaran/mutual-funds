@@ -2,7 +2,7 @@ import { TanStackRouterVite } from '@tanstack/router-vite-plugin';
 import { defineConfig } from 'vite';
 import eslintPlugin from 'vite-plugin-eslint';
 import react from '@vitejs/plugin-react';
-
+import sass from 'sass';
 // https://vitejs.dev/config/
 export default defineConfig({
   server: {
@@ -16,4 +16,11 @@ export default defineConfig({
     // eslint-disable-next-line new-cap
     TanStackRouterVite(),
   ],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        implementation: sass,
+      },
+    },
+  },
 });

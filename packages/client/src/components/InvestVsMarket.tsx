@@ -1,4 +1,4 @@
-import style from './InvestVsMarket.module.css';
+import style from './InvestVsMarket.module.scss';
 export default function InvestVsMarket({
   invest,
   market,

@@ -1,7 +1,7 @@
 import InvestVsMarket from '../components/InvestVsMarket';
 import { createFileRoute } from '@tanstack/react-router';
 import type strategies from '../strategies';
-import style from './index.module.css';
+import style from './index.module.scss';
 export const Route = createFileRoute('/')({
   component: Comp,
 });
