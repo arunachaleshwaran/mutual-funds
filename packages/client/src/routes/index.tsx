@@ -1,13 +1,12 @@
 import { Link, createFileRoute } from '@tanstack/react-router';
 import InvestVsMarket from '../components/InvestVsMarket';
-import type strategies from '../strategies';
+import type { Strategy } from '../strategies';
 import style from './index.module.scss';
 export const Route = createFileRoute('/')({
   component: Comp,
 });
 
 function Comp() {
-  type Strategy = (typeof strategies)[number];
   const investments: Array<{
     name: Strategy['name'];
     amount: number;

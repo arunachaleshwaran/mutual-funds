@@ -1,9 +1,10 @@
 import { Link, createFileRoute } from '@tanstack/react-router';
 import type { FormEventHandler } from 'react';
+import type { Strategy } from '../strategies';
+import axios from 'axios';
 import strategies from '../strategies';
 import style from './transact.module.scss';
 import { useState } from 'react';
-type Strategy = (typeof strategies)[number];
 export const Route = createFileRoute('/transact')({
   component: Comp,
 });

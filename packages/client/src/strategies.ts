@@ -1,4 +1,4 @@
-const strategy = [
+const strategies = [
   {
     name: 'Arbitrage Strategy',
     description:
@@ -77,4 +77,5 @@ const strategy = [
     ],
   },
 ] as const;
-export default strategy;
+export default strategies;
+export type Strategy = (typeof strategies)[number];
