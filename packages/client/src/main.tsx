@@ -1,3 +1,4 @@
+import './http.interceptor';
 import './index.scss';
 import {
   QueryClient,
@@ -7,7 +8,6 @@ import React, { createContext } from 'react';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import ReactDOM from 'react-dom/client';
 import { routeTree } from './routeTree.gen';
-
 const root = document.getElementById('root');
 if (root === null) {
   throw new Error('Root element not found');

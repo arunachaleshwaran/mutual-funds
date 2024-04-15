@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root';
 import { Route as TransactImport } from './routes/transact';
 import { Route as LoginImport } from './routes/login';
+import { Route as InvestmentImport } from './routes/investment';
 import { Route as HoldingImport } from './routes/holding';
 import { Route as IndexImport } from './routes/index';
 
@@ -25,6 +26,11 @@ const TransactRoute = TransactImport.update({
 
 const LoginRoute = LoginImport.update({
   path: '/login',
+  getParentRoute: () => rootRoute,
+} as any);
+
+const InvestmentRoute = InvestmentImport.update({
+  path: '/investment',
   getParentRoute: () => rootRoute,
 } as any);
 
@@ -50,6 +56,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HoldingImport;
       parentRoute: typeof rootRoute;
     };
+    '/investment': {
+      preLoaderRoute: typeof InvestmentImport;
+      parentRoute: typeof rootRoute;
+    };
     '/login': {
       preLoaderRoute: typeof LoginImport;
       parentRoute: typeof rootRoute;
@@ -66,6 +76,7 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
   HoldingRoute,
+  InvestmentRoute,
   LoginRoute,
   TransactRoute,
 ]);

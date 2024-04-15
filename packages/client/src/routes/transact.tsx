@@ -32,10 +32,29 @@ function Comp() {
       })
     );
   };
+  const makePayment: FormEventHandler<HTMLFormElement> = event => {
+    event.preventDefault();
+    const form = new FormData(event.target as HTMLFormElement);
+    void axios
+      .post<{
+        //'http://localhost:8080/payment/pg/5235f102-3fc3-407e-8f8d-76f659d48325'
+        paymentLink: string;
+        success: boolean;
+      }>('http://localhost:8080/payment', {
+        accountNumber: '11200222',
+        ifscCode: 'UBIT22222',
+        amount: Number(form.get('amount')),
+        redirectUrl: `http://localhost:3000/investment?strategy=${form.get('strategy')}`,
+      })
+      .then(res => {
+        if (!res.data.success) return;
+        window.location.replace(res.data.paymentLink);
+      });
+  };
   return (
     <div className={style.transact}>
       <Link to='/' />
-      <form onChange={updateFunds}>
+      <form onChange={updateFunds} onSubmit={makePayment}>
         <input
           min={0}
           name='amount'
