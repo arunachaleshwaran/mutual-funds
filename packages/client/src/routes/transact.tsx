@@ -37,14 +37,13 @@ function Comp() {
     const form = new FormData(event.target as HTMLFormElement);
     void axios
       .post<{
-        //'http://localhost:8080/payment/pg/5235f102-3fc3-407e-8f8d-76f659d48325'
         paymentLink: string;
         success: boolean;
       }>('http://localhost:8080/payment', {
         accountNumber: '11200222',
         ifscCode: 'UBIT22222',
         amount: Number(form.get('amount')),
-        redirectUrl: `http://localhost:3000/investment?strategy=${form.get('strategy')}`,
+        redirectUrl: `http://localhost:3000/investment?strategy=${form.get('strategy') as string}`,
       })
       .then(res => {
         if (!res.data.success) return;

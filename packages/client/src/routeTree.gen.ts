@@ -10,64 +10,64 @@
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root';
-import { Route as TransactImport } from './routes/transact';
-import { Route as LoginImport } from './routes/login';
-import { Route as InvestmentImport } from './routes/investment';
-import { Route as HoldingImport } from './routes/holding';
-import { Route as IndexImport } from './routes/index';
+import { Route as rootRoute } from './routes/__root'
+import { Route as TransactImport } from './routes/transact'
+import { Route as LoginImport } from './routes/login'
+import { Route as InvestmentImport } from './routes/investment'
+import { Route as HoldingImport } from './routes/holding'
+import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
 
 const TransactRoute = TransactImport.update({
   path: '/transact',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const LoginRoute = LoginImport.update({
   path: '/login',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const InvestmentRoute = InvestmentImport.update({
   path: '/investment',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const HoldingRoute = HoldingImport.update({
   path: '/holding',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
-      preLoaderRoute: typeof IndexImport;
-      parentRoute: typeof rootRoute;
-    };
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
     '/holding': {
-      preLoaderRoute: typeof HoldingImport;
-      parentRoute: typeof rootRoute;
-    };
+      preLoaderRoute: typeof HoldingImport
+      parentRoute: typeof rootRoute
+    }
     '/investment': {
-      preLoaderRoute: typeof InvestmentImport;
-      parentRoute: typeof rootRoute;
-    };
+      preLoaderRoute: typeof InvestmentImport
+      parentRoute: typeof rootRoute
+    }
     '/login': {
-      preLoaderRoute: typeof LoginImport;
-      parentRoute: typeof rootRoute;
-    };
+      preLoaderRoute: typeof LoginImport
+      parentRoute: typeof rootRoute
+    }
     '/transact': {
-      preLoaderRoute: typeof TransactImport;
-      parentRoute: typeof rootRoute;
-    };
+      preLoaderRoute: typeof TransactImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -79,6 +79,6 @@ export const routeTree = rootRoute.addChildren([
   InvestmentRoute,
   LoginRoute,
   TransactRoute,
-]);
+])
 
 /* prettier-ignore-end */
