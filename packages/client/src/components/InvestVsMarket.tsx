@@ -16,7 +16,8 @@ export default function InvestVsMarket({
       </span>
       <span className={style.tile}>
         <div className={style.title}>Market Value</div>
-        <div className={`${style.amount} ${style.down}`}>
+        <div
+          className={`${style.amount} ${invest < market ? style.up : style.down}`}>
           Rs.{market}
         </div>
       </span>
