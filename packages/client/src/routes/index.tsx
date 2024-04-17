@@ -1,40 +1,23 @@
 import { Link, createFileRoute } from '@tanstack/react-router';
 import InvestVsMarket from '../components/InvestVsMarket';
-import type { Strategy } from '../strategies';
 import style from './index.module.scss';
+import { useFundStore } from '../Store';
 export const Route = createFileRoute('/')({
   component: Comp,
 });
 
 function Comp() {
-  const investments: Array<{
-    name: Strategy['name'];
-    amount: number;
-  }> = [
-    {
-      name: 'Arbitrage Strategy',
-      amount: 50,
-    },
-    {
-      name: 'Balanced Strategy',
-      amount: 49,
-    },
-  ];
-  // Show all the form
+  const storedInvestment = useFundStore(store => store.investments);
   return (
     <div className={style.home}>
       <Link to='/transact'>Transact</Link>
       <div className={style.investments}>
-        {investments.map(i => (
-          <div
-            key={`${i.name}${i.amount}`}
-            className={style.investment}>
-            {i.name}
+        {storedInvestment.map(i => (
+          <div key={i.paymentID} className={style.investment}>
+            {i.strategy}
             <div className={style.option}>
-              <InvestVsMarket invest={i.amount} market={0} />
-              <Link
-                search={{ amount: i.amount, strategy: i.name }}
-                to='/holding'>
+              <InvestVsMarket ids={i.orderIDs} />
+              <Link search={{ order: i }} to='/holding'>
                 See Holdings
               </Link>
             </div>

@@ -1,10 +1,17 @@
 import { Link, createFileRoute } from '@tanstack/react-router';
-import type { MarketValue, Order, Payment } from '../model';
+import type {
+  MarketValue,
+  Order,
+  Payment,
+  SuccessResponse,
+} from '../model';
 import { queryOptions, useQueries } from '@tanstack/react-query';
 import type { Strategy } from '../strategies';
 import axios from 'axios';
 import strategies from '../strategies';
 import style from './investment.module.scss';
+import { useEffect } from 'react';
+import { useFundStore } from '../Store';
 export const Route = createFileRoute('/investment')({
   component: Comp,
   validateSearch: (search: Record<string, unknown>) => {
@@ -40,14 +47,10 @@ export const Route = createFileRoute('/investment')({
   },
 });
 function Comp() {
-  const { strategy, transactionID } = Route.useSearch();
-  const payment = Route.useLoaderData();
-  if (payment.status === 'Failed') {
-    history.back();
-    throw new Error('Payment failed');
-  }
-  const currentStrategy = strategies.find(i => i.name === strategy);
-  if (!currentStrategy) throw new Error('No strategy found');
+  const { strategy, transactionID } = Route.useSearch(),
+    payment = Route.useLoaderData();
+  if (payment.status === 'Failed') history.back();
+  const currentStrategy = strategies.find(i => i.name === strategy)!;
   const userQueries = useQueries({
     queries: currentStrategy.funds.map(fund => ({
       queryKey: ['order', fund.name, transactionID],
@@ -58,16 +61,32 @@ function Comp() {
         const PERCENTAGE = 100;
         const amount =
           (payment.amount * fund.percentage) / PERCENTAGE;
-        return axios.post<Order>('http://localhost:8081/order', {
-          fund: fund.name,
-          amount,
-          units: amount / marketValue.marketValue,
-          pricePerUnit: marketValue.marketValue,
-          paymentID: transactionID,
-        });
+        const response = await axios.post<SuccessResponse<Order>>(
+          'http://localhost:8081/order',
+          {
+            fund: fund.name,
+            amount,
+            units: amount / marketValue.marketValue,
+            pricePerUnit: marketValue.marketValue,
+            paymentID: transactionID,
+          }
+        );
+        const { data } = response;
+        return data.data;
       },
     })),
   });
+  const addOrder = useFundStore(state => state.addOrder);
+  useEffect(() => {
+    const allSuccessful = userQueries.every(
+      ({ status }) => status === 'success'
+    );
+    if (allSuccessful)
+      addOrder(
+        userQueries.map(({ data }) => data!),
+        strategy
+      );
+  }, [userQueries]);
   return (
     <div className={style.investment}>
       Investment for {strategy}

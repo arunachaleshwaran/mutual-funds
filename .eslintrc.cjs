@@ -19,7 +19,7 @@ module.exports = {
   ignorePatterns: ['dist', '.eslintrc.cjs'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaVersion: 2022,
+    ecmaVersion: 2023,
     sourceType: 'module',
     ecmaFeatures: {
       jsx: true,
@@ -29,6 +29,7 @@ module.exports = {
   rules: {
     'react/react-in-jsx-scope': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/no-non-null-assertion': 'off',
     'react/jsx-filename-extension': [1, { extensions: ['.tsx'] }],
     'func-style': 0,
     '@typescript-eslint/explicit-module-boundary-types': 'off',

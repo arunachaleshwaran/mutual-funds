@@ -22,8 +22,12 @@ export type Order = {
   units: number;
   pricePerUnit: number;
   status: 'Failed' | 'Submitted';
-  paymentID: '3cd4267a-75f6-40f7-86dc-5ec4802e7ca9';
+  paymentID: string;
   submittedAt: ReturnType<Date['toISOString']>;
   succeededAt: ReturnType<Date['toISOString']>;
   failedAt: ReturnType<Date['toISOString']>;
+};
+export type SuccessResponse<T> = {
+  success: boolean;
+  data: T;
 };
