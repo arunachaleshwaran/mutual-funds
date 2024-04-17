@@ -1,5 +1,5 @@
 import axios from 'axios';
-import useAuthStore from './Store';
+import { useAuthStore } from './Store';
 axios.interceptors.request.use(
   config => {
     config.headers.Authorization =

@@ -1,11 +1,22 @@
 import { create } from 'zustand';
 
-export type Store = {
+export type AuthStore = {
   authenticated: string;
   setAuthenticated: (authenticated: string) => void;
 };
-const useAuthStore = create<Store>()(set => ({
+export const useAuthStore = create<AuthStore>()(set => ({
   authenticated: '',
   setAuthenticated: authenticated => set(() => ({ authenticated })),
 }));
-export default useAuthStore;
+
+export type FundStore = {
+  funds: Array<{
+    name: string;
+    percentage: number;
+  }>;
+  addFunds: (funds: FundStore['funds']) => void;
+};
+export const useFundStore = create<FundStore>()(set => ({
+  funds: [],
+  addFunds: funds => set(() => ({ funds })),
+}));

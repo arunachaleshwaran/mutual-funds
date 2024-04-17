@@ -6,7 +6,7 @@ import {
 import type { QueryClient } from '@tanstack/react-query';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import style from './__root.module.scss';
-import useAuthStore from '../Store';
+import { useAuthStore } from '../Store';
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
 }>()({

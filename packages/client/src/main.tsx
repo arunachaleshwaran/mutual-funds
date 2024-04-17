@@ -4,8 +4,8 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
-import React, { createContext } from 'react';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { routeTree } from './routeTree.gen';
 const root = document.getElementById('root');

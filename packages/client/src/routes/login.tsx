@@ -1,7 +1,7 @@
 import type { FormEvent, FormEventHandler } from 'react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import style from './login.module.scss';
-import useAuthStore from '../Store';
+import { useAuthStore } from '../Store';
 
 export const Route = createFileRoute('/login')({
   component: Comp,

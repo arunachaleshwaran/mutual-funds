@@ -21,7 +21,8 @@ function Comp() {
       i => i.name === form.get('strategy')
     );
     if (!currStrategy) return;
-    const amount = Number(form.get('amount')) || 0;
+    const DEFAULT_AMOUNT = 0;
+    const amount = Number(form.get('amount')) || DEFAULT_AMOUNT;
     const PERCENTAGE = 100;
     setAllFunds(
       currStrategy.funds.map(fund => {
