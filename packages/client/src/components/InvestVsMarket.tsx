@@ -19,7 +19,7 @@ export default function InvestVsMarket({
         );
         return {
           invest: order.amount,
-          market: marketValue.marketValue,
+          market: marketValue.marketValue * order.units,
         };
       },
     })),
