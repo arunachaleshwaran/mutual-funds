@@ -1,4 +1,4 @@
-import type { MarketValue, Order } from '../model';
+import type { MarketValue, Order } from '@mutual-fund/shared';
 import axios from 'axios';
 import style from './InvestVsMarket.module.scss';
 import { useQueries } from '@tanstack/react-query';

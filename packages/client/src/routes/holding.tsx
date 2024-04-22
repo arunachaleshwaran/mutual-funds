@@ -2,7 +2,7 @@ import { Link, createFileRoute } from '@tanstack/react-router';
 import type { FundStore } from '../Store';
 import InvestVsMarket from '../components/InvestVsMarket';
 import homeStyle from './index.module.scss';
-import strategies from '../strategies';
+import strategies from '@mutual-fund/shared/strategies';
 import style from './holding.module.scss';
 export const Route = createFileRoute('/holding')({
   component: Comp,

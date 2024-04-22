@@ -1,7 +1,7 @@
 {
-  "name": "google-form",
+  "name": "mutual-fund",
   "version": "1.0.0",
-  "workspaces": ["packages/client", "packages/server"],
+  "workspaces": ["packages/*"],
   "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -31,5 +31,9 @@
   "engines": {
     "node": "^21",
     "npm:": "^10"
+  },
+  "exports": {
+    ".": "./model.ts",
+    "./strategies": "./strategies.ts"
   }
 }

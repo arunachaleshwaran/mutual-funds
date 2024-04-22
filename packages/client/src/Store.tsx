@@ -1,5 +1,5 @@
-import type { Order } from './model';
-import type { Strategy } from './strategies';
+import type { Order } from '@mutual-fund/shared';
+import type { Strategy } from '@mutual-fund/shared/strategies';
 import { create } from 'zustand';
 
 export type AuthStore = {

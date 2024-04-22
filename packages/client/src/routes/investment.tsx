@@ -4,11 +4,11 @@ import type {
   Order,
   Payment,
   SuccessResponse,
-} from '../model';
+} from '@mutual-fund/shared';
 import { queryOptions, useQueries } from '@tanstack/react-query';
-import type { Strategy } from '../strategies';
+import type { Strategy } from '@mutual-fund/shared/strategies';
 import axios from 'axios';
-import strategies from '../strategies';
+import strategies from '@mutual-fund/shared/strategies';
 import style from './investment.module.scss';
 import { useEffect } from 'react';
 import { useFundStore } from '../Store';

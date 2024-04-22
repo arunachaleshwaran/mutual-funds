@@ -1,8 +1,8 @@
 import { Link, createFileRoute } from '@tanstack/react-router';
 import type { FormEventHandler } from 'react';
-import type { Strategy } from '../strategies';
+import type { Strategy } from '@mutual-fund/shared/strategies';
 import axios from 'axios';
-import strategies from '../strategies';
+import strategies from '@mutual-fund/shared/strategies';
 import style from './transact.module.scss';
 import { useState } from 'react';
 export const Route = createFileRoute('/transact')({

@@ -1,7 +1,8 @@
 {
-  "name": "server",
+  "name": "@mutual-fund/server",
   "version": "1.0.0",
   "description": "",
+  "private": true,
   "type": "module",
   "scripts": {
     "dev": "bash ../../build/setup-nvm.sh && tsc && node dist/index.js"
