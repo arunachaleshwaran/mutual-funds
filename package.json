@@ -5,6 +5,9 @@
   "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build:shared": "npm run build -w @mutual-fund/shared",
+    "dev:client": "npm run dev -w @mutual-fund/client",
+    "dev:server": "npm run dev -w @mutual-fund/server",
     "prepare": "husky"
   },
   "author": "",

@@ -1,4 +1,4 @@
-import type { Strategy } from './strategies';
+import type { Strategy } from './strategies.js';
 
 export type Payment = {
   id: string;
