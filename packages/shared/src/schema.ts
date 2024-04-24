@@ -1,4 +1,4 @@
-import type { Strategy } from '@mutual-fund/shared/strategies';
+import type { Strategy } from './strategies.js';
 
 export type Schema = {
   order: {

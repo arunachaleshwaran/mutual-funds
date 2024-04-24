@@ -4,12 +4,12 @@ import type {
   Payment,
   SuccessResponse,
 } from '@mutual-fund/shared';
-import { collection, connect } from './db/mongo.js';
+import { collection, connect } from './mongo.js';
 import ExpressError from '../express-error.js';
 import HttpStatusCode from '../HttpStatusCode.js';
 import { QueriesObserver } from '@tanstack/query-core';
 import { Router } from 'express';
-import type { Schema } from './db/schema.js';
+import type { Schema } from '@mutual-fund/shared';
 import type { Strategy } from '@mutual-fund/shared/strategies';
 import queryClient from './tanstack-query.js';
 import strategies from '@mutual-fund/shared/strategies';

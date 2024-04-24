@@ -1,5 +1,5 @@
 import type { Strategy } from './strategies.js';
-
+export type { Schema } from './schema.js';
 export type Payment = {
   id: string;
   accountNumber: string;

@@ -1,6 +1,6 @@
 import { MongoClient, ServerApiVersion } from 'mongodb';
 import type { Collection } from 'mongodb';
-import type { Schema } from './schema.js';
+import type { Schema } from '@mutual-fund/shared';
 
 export async function connect() {
   const client = new MongoClient('mongodb://localhost:27017', {
