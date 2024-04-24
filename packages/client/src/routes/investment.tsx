@@ -1,17 +1,10 @@
 import { Link, createFileRoute } from '@tanstack/react-router';
-import type {
-  MarketValue,
-  Order,
-  Payment,
-  SuccessResponse,
-} from '@mutual-fund/shared';
-import { queryOptions, useQueries } from '@tanstack/react-query';
+import type { Order } from '@mutual-fund/shared';
+import type { QueryObserverResult } from '@tanstack/react-query';
 import type { Strategy } from '@mutual-fund/shared/strategies';
-import axios from 'axios';
 import strategies from '@mutual-fund/shared/strategies';
 import style from './investment.module.scss';
-import { useEffect } from 'react';
-import { useFundStore } from '../Store';
+import useFetchEvent from '../helper/useFetchEvent';
 export const Route = createFileRoute('/investment')({
   component: Comp,
   validateSearch: (search: Record<string, unknown>) => {
@@ -25,88 +18,43 @@ export const Route = createFileRoute('/investment')({
       transactionID,
     };
   },
-  loader: async ({
-    context: { queryClient },
-    location: { search },
-  }) => {
-    const { transactionID } = search as {
-      strategy: string;
-      transactionID: string;
-    };
-    return queryClient.ensureQueryData(
-      queryOptions({
-        queryKey: ['payment', transactionID],
-        queryFn: async () => {
-          const res = await axios.get<Payment>(
-            `http://localhost:8080/payment/${transactionID}`
-          );
-          return res.data;
-        },
-      })
-    );
-  },
 });
 function Comp() {
-  const { strategy, transactionID } = Route.useSearch(),
-    payment = Route.useLoaderData();
-  if (payment.status === 'Failed') history.back();
-  const currentStrategy = strategies.find(i => i.name === strategy)!;
-  const userQueries = useQueries({
-    queries: currentStrategy.funds.map(fund => ({
-      queryKey: ['order', fund.name, transactionID],
-      queryFn: async () => {
-        const { data: marketValue } = await axios.get<MarketValue>(
-          `http://localhost:8081/market-value/${fund.name}`
-        );
-        const PERCENTAGE = 100;
-        const amount =
-          (payment.amount * fund.percentage) / PERCENTAGE;
-        const response = await axios.post<SuccessResponse<Order>>(
-          'http://localhost:8081/order',
-          {
-            fund: fund.name,
-            amount,
-            units: amount / marketValue.marketValue,
-            pricePerUnit: marketValue.marketValue,
-            paymentID: transactionID,
-          }
-        );
-        const { data } = response;
-        return data.data;
+  const { strategy, transactionID } = Route.useSearch();
+  const [state, error] = useFetchEvent<
+    Array<
+      Pick<QueryObserverResult<Order>, 'data' | 'error' | 'status'>
+    >
+  >(
+    `http://localhost:4000/transact/${transactionID}?strategy=${strategy}`,
+    {
+      method: 'POST',
+      headers: {
+        authorization: '1234567890',
       },
-    })),
-  });
-  const addOrder = useFundStore(state => state.addOrder);
-  useEffect(() => {
-    const allSuccessful = userQueries.every(
-      ({ status }) => status === 'success'
+    },
+    ['Already Processed']
+  );
+  const currentStrategy = strategies.find(i => i.name === strategy)!;
+  if (error !== null)
+    return (
+      <div className={style.investment}>
+        {error}
+        <Link to='/'>Home</Link>
+      </div>
     );
-    if (allSuccessful)
-      addOrder(
-        userQueries.map(({ data }) => data!),
-        strategy
-      );
-  }, [userQueries]);
   return (
     <div className={style.investment}>
       Investment for {strategy}
-      {userQueries.map(({ status }, i) => (
+      {/* Note: always currentStrategy funds and query result are on correct order */}
+      {state?.map((queryResult, i) => (
         <div
           key={currentStrategy.funds[i].name}
           className={style.status}>
-          {currentStrategy.funds[i].name} -{status}
+          {currentStrategy.funds[i].name} -{queryResult.status}
         </div>
       ))}
-      <Link
-        // eslint-disable-next-line react/forbid-component-props
-        className={
-          userQueries.every(({ status }) => status === 'success')
-            ? ''
-            : style.disable
-        }
-        to='/'>
-        Home
-      </Link>
+      <Link to='/'>Home</Link>
     </div>
   );
 }

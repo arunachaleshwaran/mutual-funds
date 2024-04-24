@@ -1,4 +1,4 @@
-import './http.interceptor';
+import './helper/http.interceptor';
 import './index.scss';
 import {
   QueryClient,

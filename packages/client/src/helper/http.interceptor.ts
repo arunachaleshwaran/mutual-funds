@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { useAuthStore } from './Store';
+import { useAuthStore } from '../Store';
 axios.interceptors.request.use(
   config => {
-    config.headers.Authorization =
+    config.headers.authorization =
       useAuthStore.getState().authenticated;
     return config;
   },

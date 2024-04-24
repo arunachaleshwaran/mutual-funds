@@ -1,9 +1,14 @@
+import { MongoClient, ServerApiVersion } from 'mongodb';
 import type { Collection } from 'mongodb';
-import { MongoClient } from 'mongodb';
 import type { Schema } from './schema.js';
 
 export async function connect() {
-  const client = new MongoClient('mongodb://localhost:27017');
+  const client = new MongoClient('mongodb://localhost:27017', {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+    },
+  });
   await client.connect();
   return client;
 }
@@ -11,6 +16,6 @@ export function collection<T extends keyof Schema>(
   client: MongoClient,
   dbName: T
 ): Collection<Schema[T]> {
-  const database = client.db('dev_db');
+  const database = client.db('mutual_funds');
   return database.collection<Schema[T]>(dbName);
 }
