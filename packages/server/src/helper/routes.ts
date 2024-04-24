@@ -15,7 +15,50 @@ import queryClient from './tanstack-query.js';
 import strategies from '@mutual-fund/shared/strategies';
 // eslint-disable-next-line new-cap
 const route = Router();
-
+type OrderResponse = Omit<
+  Schema['order'],
+  'paymentId' | 'phoneNumber'
+> &
+  Partial<Pick<Order, 'fund'>>;
+route.get<
+  '/order',
+  Record<string, never>,
+  Array<Required<OrderResponse>>,
+  never,
+  Record<string, never>
+>('/order', async (_, res, next) => {
+  try {
+    const { phoneNumber } = res.locals;
+    const client = await connect();
+    const orderColl = collection(client, 'order');
+    const orders: Array<OrderResponse> = await orderColl
+      .find(
+        { phoneNumber },
+        { projection: { _id: 0, phoneNumber: 0, paymentId: 0 } }
+      )
+      .toArray();
+    const orderResponse = await Promise.all(
+      orders.map(async order => {
+        return queryClient.ensureQueryData({
+          queryKey: ['order', order.orderId],
+          queryFn: async () => {
+            const response = await fetch(
+              `http://localhost:8081/order/${order.orderId}`
+            );
+            return response.json() as Promise<Order>;
+          },
+        });
+      })
+    );
+    orderResponse.forEach((order, index) => {
+      orders[index].fund = order.fund;
+    });
+    res.json(orders as Array<Required<OrderResponse>>);
+    await client.close();
+  } catch (error) {
+    next(error);
+  }
+});
 /**
  * After payment processed the order is placed.
  */

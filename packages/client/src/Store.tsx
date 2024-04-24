@@ -1,4 +1,4 @@
-import type { Order } from '@mutual-fund/shared';
+import type { Order, Schema } from '@mutual-fund/shared';
 import type { Strategy } from '@mutual-fund/shared/strategies';
 import { create } from 'zustand';
 
@@ -13,16 +13,25 @@ export const useAuthStore = create<AuthStore>()(set => ({
     set(() => ({ authenticated }));
   },
 }));
-
+export type OrderResponse = Omit<
+  Schema['order'],
+  'paymentId' | 'phoneNumber'
+> &
+  Pick<Order, 'fund'>;
 export type FundStore = {
-  investments: Array<{
-    paymentID: Order['paymentID'];
-    orderIDs: Array<Order['id']>;
-    strategy: Strategy['name'];
-  }>;
+  strategyVsOrders: Readonly<
+    Partial<Record<Strategy['name'], Array<OrderResponse>>>
+  >;
+  setStrategyVsOrders: (orders: Array<OrderResponse>) => void;
 };
 export const useFundStore = create<FundStore>()(set => ({
-  investments: JSON.parse(
-    sessionStorage.getItem('investments') ?? '[]'
-  ) as FundStore['investments'],
+  strategyVsOrders: {},
+  setStrategyVsOrders: orders => {
+    set(() => ({
+      strategyVsOrders: Object.groupBy(
+        orders,
+        ({ strategy }) => strategy
+      ),
+    }));
+  },
 }));
