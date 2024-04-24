@@ -1,41 +1,59 @@
 import { Link, createFileRoute } from '@tanstack/react-router';
-import type { FundStore } from '../Store';
 import InvestVsMarket from '../components/InvestVsMarket';
+import type { OrderResponse } from '../Store';
+import type { Strategy } from '@mutual-fund/shared/strategies';
 import homeStyle from './index.module.scss';
-import strategies from '@mutual-fund/shared/strategies';
 import style from './holding.module.scss';
+import { useFundStore } from '../Store';
 export const Route = createFileRoute('/holding')({
   component: Comp,
   validateSearch: (search: Record<string, unknown>) => {
     return {
-      order: search.order as FundStore['investments'][number],
+      strategy: search.strategy as Strategy['name'],
     };
   },
 });
 
 function Comp() {
-  const { order } = Route.useSearch();
-  const currStrategy = strategies.find(
-    i => i.name === order.strategy
+  const { strategy } = Route.useSearch();
+  const strategyVsOrders = useFundStore(
+    store => store.strategyVsOrders
   );
-  if (!currStrategy) {
-    return <div>Strategy not found</div>;
+  const orders = strategyVsOrders[strategy];
+  if (!orders) {
+    return (
+      <div className={style.holding}>
+        <Link to='/' />
+      </div>
+    );
   }
+  const funds = (
+    Object.entries(
+      Object.groupBy(orders, ({ fund }) => fund)
+    ) as Array<
+      [
+        Extract<
+          Strategy,
+          { name: typeof strategy }
+        >['funds'][number]['name'],
+        Array<OrderResponse>,
+      ]
+    >
+  ).sort(([fund1], [fund2]) => fund1.localeCompare(fund2));
   return (
     <div className={style.holding}>
       <Link to='/' />
       <div className={homeStyle.investments}>
-        {order.orderIDs.map((id, index) => {
-          const fund = currStrategy.funds[index];
-          return (
-            <div key={fund.name} className={homeStyle.investment}>
-              {fund.name}
-              <div className={homeStyle.option}>
-                <InvestVsMarket ids={[id]} />
-              </div>
+        {funds.map(([fund, ordersOfFund]) => (
+          <div key={fund} className={homeStyle.investment}>
+            {fund}
+            <div className={homeStyle.option}>
+              <InvestVsMarket
+                ids={ordersOfFund.map(({ orderId }) => orderId)}
+              />
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
     </div>
   );
