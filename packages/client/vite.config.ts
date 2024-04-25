@@ -23,4 +23,8 @@ export default defineConfig({
       },
     },
   },
+  define: {
+    DEVTOOLS_TANSTACK_QUERY: true,
+    DEVTOOLS_TANSTACK_ROUTE: true,
+  },
 });

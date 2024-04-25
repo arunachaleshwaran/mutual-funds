@@ -4,6 +4,7 @@ import {
   redirect,
 } from '@tanstack/react-router';
 import type { QueryClient } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import style from './__root.module.scss';
 import { useAuthStore } from '../Store';
@@ -15,7 +16,8 @@ export const Route = createRootRouteWithContext<{
       <main className={style.main}>
         <Outlet />
       </main>
-      <TanStackRouterDevtools />
+      {DEVTOOLS_TANSTACK_QUERY ? <ReactQueryDevtools /> : null}
+      {DEVTOOLS_TANSTACK_ROUTE ? <TanStackRouterDevtools /> : null}
     </>
   ),
   beforeLoad: ({ location }) => {
