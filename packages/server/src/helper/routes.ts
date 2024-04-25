@@ -8,11 +8,13 @@ import { collection, connect } from './mongo.js';
 import ExpressError from '../express-error.js';
 import HttpStatusCode from '../HttpStatusCode.js';
 import { QueriesObserver } from '@tanstack/query-core';
+import { QueryClient } from '@tanstack/query-core';
 import { Router } from 'express';
 import type { Schema } from '@mutual-fund/shared';
 import type { Strategy } from '@mutual-fund/shared/strategies';
-import queryClient from './tanstack-query.js';
 import strategies from '@mutual-fund/shared/strategies';
+
+const queryClient = new QueryClient();
 // eslint-disable-next-line new-cap
 const route = Router();
 type OrderResponse = Omit<
@@ -20,6 +22,10 @@ type OrderResponse = Omit<
   'paymentId' | 'phoneNumber'
 > &
   Partial<Pick<Order, 'fund'>>;
+/**
+ * Fetch order id from mongodb and fetch its details from RTA server.
+ * and cache the value for future use.
+ */
 route.get<
   '/order',
   Record<string, never>,
@@ -40,6 +46,8 @@ route.get<
     const orderResponse = await Promise.all(
       orders.map(async order => {
         return queryClient.ensureQueryData({
+          staleTime: Infinity,
+          gcTime: Infinity,
           queryKey: ['order', order.orderId],
           queryFn: async () => {
             const response = await fetch(
@@ -60,6 +68,57 @@ route.get<
   }
 });
 /**
+ * Fetch order id from mongodb and fetch its details from RTA server.
+ * and cache the value for future use.
+ */
+route.get<
+  '/market-value',
+  Record<string, never>,
+  { invest: number; market: number },
+  never,
+  { orderIds: Array<Schema['order']['orderId']> }
+>('/market-value', async (req, res, next) => {
+  try {
+    const { orderIds } = req.query;
+    const ordersCache = orderIds.map(id =>
+      queryClient
+        .getQueryCache()
+        .find<Order>({ queryKey: ['order', id] })
+    );
+    const orders = ordersCache
+      .filter(cache => cache?.state.status === 'success')
+      .map(cache => cache!.state.data) as Array<Order>;
+    const marketRes = await Promise.all(
+      orders.map(async order =>
+        queryClient.ensureQueryData<MarketValue>({
+          queryKey: ['market-value', order.fund],
+          gcTime: 40000,
+          staleTime: 30000,
+          queryFn: async () => {
+            const response = await fetch(
+              `http://localhost:8081/market-value/${order.fund}`
+            );
+            return response.json() as Promise<MarketValue>;
+          },
+        })
+      )
+    );
+    const invest = Math.round(
+      orders.reduce((acc, order) => acc + order.amount, 0)
+    );
+    const market = Math.round(
+      marketRes.reduce(
+        (acc, { marketValue }, index) =>
+          acc + marketValue * orders[index].units,
+        0
+      )
+    );
+    res.json({ invest, market });
+  } catch (error) {
+    next(error);
+  }
+});
+/**
  * After payment processed the order is placed.
  */
 route.post<
@@ -75,6 +134,7 @@ route.post<
       currentStrategy = strategies.find(
         i => i.name === req.query.strategy
       ),
+      /** Check for payment process if not processed it will throw error */
       payment = await queryClient.ensureQueryData({
         queryKey: ['payment', transactionID],
         queryFn: async () => {
@@ -131,6 +191,7 @@ route.post<
             (await response.json()) as SuccessResponse<Order>;
           const order = data.data;
           await orderColl.insertOne({
+            // Mininum data required to process and others will get from service on demand
             strategy: req.query.strategy,
             orderId: order.id,
             paymentId: order.paymentID,

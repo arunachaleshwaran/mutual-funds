@@ -11,6 +11,9 @@ function noErrorParse<T>(data: string): T | string {
 /**
  * Like a observable's can able to process the stream of data
  * each chunk is consider as a full state.
+ * @param url API URL for fetch
+ * @param option API option for fetch
+ * @param knownErrors List of known errors can shown on UI
  */
 export default function useFetchEvent<T>(
   url: Parameters<typeof fetch>[0],

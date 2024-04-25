@@ -13,6 +13,7 @@ function Comp() {
     name: Strategy['funds'][number]['name'];
     amount: number;
   }> | null>(null);
+  /** When amount or strategy change this will update the funds */
   const updateFunds: FormEventHandler<HTMLFormElement> = event => {
     const form = new FormData(
       (event.target as HTMLFormElement).form as HTMLFormElement

@@ -4,6 +4,7 @@ import type { QueryObserverResult } from '@tanstack/react-query';
 import type { Strategy } from '@mutual-fund/shared/strategies';
 import strategies from '@mutual-fund/shared/strategies';
 import style from './investment.module.scss';
+import { useAuthStore } from '../Store';
 import useFetchEvent from '../helper/useFetchEvent';
 export const Route = createFileRoute('/investment')({
   component: Comp,
@@ -21,6 +22,7 @@ export const Route = createFileRoute('/investment')({
 });
 function Comp() {
   const { strategy, transactionID } = Route.useSearch();
+  const authenticated = useAuthStore(store => store.authenticated);
   const [state, error] = useFetchEvent<
     Array<
       Pick<QueryObserverResult<Order>, 'data' | 'error' | 'status'>
@@ -30,7 +32,7 @@ function Comp() {
     {
       method: 'POST',
       headers: {
-        authorization: '1234567890',
+        authorization: authenticated,
       },
     },
     ['Already Processed']

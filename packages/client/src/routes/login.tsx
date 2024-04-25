@@ -3,6 +3,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import style from './login.module.scss';
 import { useAuthStore } from '../Store';
 
+/** Redirected from all the screen if not login already */
 export const Route = createFileRoute('/login')({
   component: Comp,
   validateSearch: (search: Record<string, unknown>) => {

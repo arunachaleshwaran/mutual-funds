@@ -1,57 +1,50 @@
-import type { MarketValue, Order } from '@mutual-fund/shared';
+import type { Order } from '@mutual-fund/shared';
 import axios from 'axios';
 import style from './InvestVsMarket.module.scss';
-import { useQueries } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
+/**
+ * Shows investment and market value
+ */
 export default function InvestVsMarket({
   ids,
 }: {
   readonly ids: Array<Order['id']>;
 }) {
-  const marketQueries = useQueries({
-    queries: ids.map(id => ({
-      queryKey: ['market-value', id],
-      queryFn: async () => {
-        const { data: order } = await axios.get<Order>(
-          `http://localhost:8081/order/${id}`
-        );
-        const { data: marketValue } = await axios.get<MarketValue>(
-          `http://localhost:8081/market-value/${order.fund}`
-        );
-        return {
-          invest: order.amount,
-          market: marketValue.marketValue * order.units,
-        };
-      },
-    })),
+  const { status, data } = useQuery({
+    queryKey: ['market-value', ...ids],
+    gcTime: 30000,
+    staleTime: 20000,
+    refetchInterval: 30000,
+    queryFn: async () => {
+      const { data: marketValue } = await axios.get<{
+        invest: number;
+        market: number;
+      }>(`http://localhost:4000/market-value/`, {
+        params: { orderIds: ids },
+      });
+      return marketValue;
+    },
   });
-  const isLoading = marketQueries.some(i => i.isLoading);
-  const INITIAL_AMOUNT = 0;
-  const invest = isLoading
-    ? INITIAL_AMOUNT
-    : marketQueries.reduce(
-        (acc, i) => acc + i.data!.invest,
-        INITIAL_AMOUNT
-      );
-  const market = isLoading
-    ? INITIAL_AMOUNT
-    : marketQueries.reduce(
-        (acc, i) => acc + i.data!.market,
-        INITIAL_AMOUNT
-      );
   return (
     <>
       <span className={style.tile}>
         <div className={style.title}>Invested Amount</div>
         <div className={`${style.amount} ${style.up}`}>
-          {isLoading ? '...' : `Rs.${Math.round(invest)}`}
+          {status === 'success' ? `Rs.${data.invest}` : '...'}
         </div>
       </span>
       <span className={style.tile}>
         <div className={style.title}>Market Value</div>
-        <div
-          className={`${style.amount} ${invest < market ? style.up : style.down}`}>
-          {isLoading ? '...' : `Rs.${Math.round(market)}`}
-        </div>
+        {status === 'success' ? (
+          <div
+            className={`${style.amount} ${
+              data.invest < data.market ? style.up : style.down
+            }`}>
+            Rs.{data.market}
+          </div>
+        ) : (
+          <div className={style.amount}>...</div>
+        )}
       </span>
     </>
   );
