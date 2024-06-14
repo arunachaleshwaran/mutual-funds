@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@mutual-fund/shared": "^1.0.0",
+    "@mutual-fund/shared": "workspace:*",
     "@tanstack/react-query": "^5.28.2",
     "@tanstack/react-router": "^1.22.8",
     "axios": "^1.6.8",
